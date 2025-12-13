@@ -1,7 +1,7 @@
 # Basic wishlist app
 
 ## Description
-    This app is a realization of a wishlist with common features of adding, editing and deleting lists and list's items, though user need to register or login to use them.
+This app is a realization of a wishlist with common features of adding, editing and deleting lists and list's items, though user need to register or login to use them.
 
 ## Demonstration
 ![alt text](image.png)
