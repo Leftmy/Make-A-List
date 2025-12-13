@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MakeAList</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/js/site.js" asp-append-version="true" />
+
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -19,6 +26,25 @@
                 </ul>
 
                 <partial name="_LoginPartial" />
+            </div>
+            <div class="navbar-user">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="logged">
+                        <p>Hello, @User.Identity.Name!</p>
+
+                        <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                            <button type="submit">Logout</button>
+                        </form>
+                    </div>
+                }
+                    else
+                {
+                    <div class="login-registration-buttons">
+                        <a asp-controller="Account" asp-action="Login">Login</a> 
+                        <a asp-controller="Account" asp-action="Register">Register</a>
+                    </div>
+                }
             </div>
         </div>
     </nav>

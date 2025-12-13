@@ -1,8 +1,7 @@
-﻿@{
-    ViewData["Title"] = "Home";
-}
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to MakeAList</h1>
-    <p>Create and manage your personal lists easily.</p>
-</div>
+<h1>Welcome to MakeAList</h1>
+
+

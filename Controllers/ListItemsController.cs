@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MakeAList.Data;
 using MakeAList.Models;
+using static MakeAList.Controllers.DTO;
 
 namespace MakeAList.Controllers
 {
@@ -68,5 +69,38 @@ namespace MakeAList.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", "UserLists", new { id = listId });
         }
+        [HttpPost]
+        public async Task<IActionResult> ToggleDone([FromBody] IdDto dto)
+        {
+            var item = await _context.ListItems.FindAsync(dto.Id);
+            if (item == null)
+                return NotFound();
+
+            item.IsDone = !item.IsDone;
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Rename([FromBody] RenameDto dto)
+        {
+            var item = await _context.ListItems.FindAsync(dto.Id);
+            if (item == null) return NotFound();
+
+            item.Text = dto.Text;
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteAjax([FromBody] IdDto dto)
+        {
+            var item = await _context.ListItems.FindAsync(dto.Id);
+            if (item == null) return NotFound();
+
+            _context.ListItems.Remove(item);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
     }
 }

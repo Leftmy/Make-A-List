@@ -1,82 +1,62 @@
 ﻿@model MakeAList.Models.UserList
 
-@{
-    ViewData["Title"] = Model.Title;
-}
-
-<style>
-    .note {
-        background: #fff8a6;
-        padding: 15px 20px;
-        border-radius: 6px;
-        margin-bottom: 12px;
-        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-        border-left: 6px solid #f6d300;
-        transition: 0.2s ease;
-        cursor: pointer;
-    }
-
-    .note:hover {
-        transform: scale(1.01);
-    }
-
-    .done {
-        text-decoration: line-through;
-        opacity: 0.5;
-    }
-
-    .toggle {
-        margin-right: 12px;
-        cursor: pointer;
-        transform: scale(1.3);
-    }
-</style>
-
 <h1>@Model.Title</h1>
+
 <p><strong>Type:</strong> @Model.Type</p>
 
 <a class="btn btn-primary" asp-controller="ListItems" asp-action="Create" asp-route-listId="@Model.Id">Add Item</a>
 
 <hr />
 
-<div id="items-container">
+<div id="list">
     @foreach (var item in Model.Items)
     {
-            <div class="note" data-id="@item.Id">
-                <input type="checkbox" class="toggle" @(item.IsDone ? "checked" : "") />
-                <span class="text @(item.IsDone ? "done" : "")">@item.Text</span>
+        <div class="item" data-id="@item.Id">
+                <input type="checkbox"
+                    @(item.IsDone ? "checked" : "")
+                    onchange="toggleDone(@item.Id, this)" />
 
-                <div style="float:right;">
-                    <a asp-controller="ListItems" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-controller="ListItems" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </div>
-            </div>
+            <input class="text @(item.IsDone ? "done" : "")"
+                   value="@item.Text"
+                   onblur="rename(@item.Id, this)" />
+
+            @if (!string.IsNullOrEmpty(item.Url))
+            {
+                    <a class="link" href="@item.Url" target="_blank">
+                        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                        </svg>
+                    </a>
+            }
+
+               <div class="actions">
+                    <button type="button" onclick="openDelete(@item.Id)" class="icon-btn" title="Delete">
+                            <svg class="trashcan" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 25 24.8" style="enable-background:new 0 0 25 24.8;" xml:space="preserve" class="icon-trashcan ct-delete" data-ember-action="" data-ember-action-1015="1015">
+                                <g class="trashcan-open">
+                                    <path d="M18.7,24.4H5.9L4.9,7h14.9L18.7,24.4z M7.6,22.6H17l0.8-13.7h-11L7.6,22.6z"></path>
+                                    <polygon points="13.6,10.3 13.1,21.2 14.9,21.2 15.4,10.3 "></polygon>
+                                    <polygon points="11.5,21.2 11,10.3 9.2,10.3 9.7,21.2 "></polygon>
+                                    <path d="M19.1,0.7l-4.7,0.9l-0.8-1.4L8.2,1.3L8,3l-4.7,1l0.2,4.7l17.3-3.5L19.1,0.7z M8.8,1.9l4.4 -1.0 l0.5,0.8 L8.7,2.8z M5.2,6.4l0-1L18,2.8l0.3,0.9L5.2,6.4z"></path>
+                                </g>
+                                <g class="trashcan-closed">
+                                    <path d="M6.8,8.8h11L17,22.6 H7.6L6.8,8.8z M4.9,7l1,17.4h12.8 l1-17.4 H4.9z"></path>
+                                    <polygon points="13.6,10.3 13.1,21.2 14.9,21.2 15.4,10.3 "></polygon>
+                                    <polygon points="11.5,21.2 11,10.3 9.2,10.3 9.7,21.2 "></polygon>
+                                    <path d="M20.4,4h-4.8l-0.5-1.6 H9.5L9,4 H4.2 L3.5,8.6h17.6 L20.4,4z M9.9,3.2h4.8 L14.9,3.9h-5.2z M5.6,6.7l0.2-1 h13l0.2,1 H5.6z"></path>
+                                </g>
+                            </svg>
+                    </button>
+               </div>
+        </div>
     }
 </div>
 
+<div class="modal" id="deleteModal">
+    <div class="modal-content">
+        <p>Delete?</p>
+        <button onclick="confirmDelete()">Yes</button>
+        <button onclick="closeDelete()">No</button>
+    </div>
+</div>
 
-<script>
-    document.querySelectorAll('.note .toggle').forEach(cb => {
-        cb.addEventListener('change', async (e) => {
-            const note = e.target.closest('.note');
-            const id = note.dataset.id;
-
-            const response = await fetch('/ToDo/ToggleDone', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                const text = note.querySelector('.text');
-                if (result.isDone) {
-                    text.classList.add('done');
-                } else {
-                    text.classList.remove('done');
-                }
-            }
-        });
-    });
-</script>
