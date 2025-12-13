@@ -1,23 +1,17 @@
 ﻿@using MakeAList.Models.ViewModel
 @model RegisterViewModel
 
-<h2>Register</h2>
+
 
 <form method="post">
-    <div>
-        <label>Username</label>
-        <input asp-for="Username" />
+    <div class="register-form">
+        <h2>Register</h2>
+        <input placeholder="Username" asp-for="Username" />
         <span asp-validation-for="Username"></span>
-    </div>
-    <div>
-        <label>Password</label>
-        <input asp-for="Password" type="password" />
+        <input placeholder="Password" asp-for="Password" type="password" />
         <span asp-validation-for="Password"></span>
-    </div>
-    <div>
-        <label>Confirm Password</label>
-        <input asp-for="ConfirmPassword" type="password" />
+        <input placehodler="Confirm Password" asp-for="ConfirmPassword" type="password" />
         <span asp-validation-for="ConfirmPassword"></span>
+         <button type="submit">Register</button>
     </div>
-    <button type="submit">Register</button>
 </form>

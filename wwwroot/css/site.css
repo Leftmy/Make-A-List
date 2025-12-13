@@ -177,3 +177,22 @@ body {
     padding-right:10px;
     gap:10px;
 }
+.login-form,.register-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    max-width: 300px;
+    margin: auto;
+}
+.login-form input, .login-form button {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+.register-form input, .register-form button {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
